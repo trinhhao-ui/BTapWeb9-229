@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="header">
+    <a th:href="@{/}" class="brand">IOTSTAR SHOP</a>
+    <nav>
+        <a th:href="@{/}">Dashboard</a>
+        <a th:href="@{/products}">Products</a>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+           th:href="@{/users}">Users</a>
+    </nav>
+    <div class="account" th:if="${#authorization.expression('isAuthenticated()')}" style="display: flex; align-items: center; gap: 10px;">
+        <img th:src="${#authentication.principal.images != null and !#strings.isEmpty(#authentication.principal.images) ? #authentication.principal.images : '/images/user.png'}"
+             alt="Avatar" width="36" height="36" style="border-radius:50%; object-fit:cover; border: 2px solid #38bdf8;">
+        <span style="font-weight: 600; color: #f8fafc;" th:text="${#authentication.principal.fullName}"></span>
+        <span style="color: #94a3b8; font-size: 13px;" th:text="'(' + ${#authentication.principal.username} + ')'"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline; margin-left: 8px;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/login}">Login</a>
+    </div>
+</header>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/layout :: head(${mode == 'create' ? 'Thêm User' : 'Sửa User'})}"></head>
+<body>
+<div th:replace="~{layouts/layout :: page(~{::main})}">
+<main>
+    <div class="form-card">
+        <h1 th:text="${mode == 'create' ? 'Thêm Người Dùng Mới' : 'Cập Nhật Người Dùng'}"></h1>
+
+        <form th:object="${userDTO}" method="post" accept-charset="UTF-8"
+              th:action="${mode == 'create'} ? @{/users/create} : @{/users/edit/{id}(id=${userDTO.id})}">
+
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert error">
+                <p th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+            </div>
+            <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+            <label>Username</label>
+            <input type="text" th:field="*{username}" placeholder="Nhập tên đăng nhập">
+            <small class="error-text" th:errors="*{username}"></small>
+
+            <label>Email</label>
+            <input type="email" th:field="*{email}" placeholder="example@domain.com">
+            <small class="error-text" th:errors="*{email}"></small>
+
+            <label>Họ và tên</label>
+            <input type="text" th:field="*{fullName}" placeholder="Nhập họ và tên đầy đủ">
+            <small class="error-text" th:errors="*{fullName}"></small>
+
+            <label>Vai trò (Role)</label>
+            <select th:field="*{roleName}">
+                <option value="ROLE_USER">Người dùng (ROLE_USER)</option>
+                <option value="ROLE_ADMIN">Quản trị viên (ROLE_ADMIN)</option>
+            </select>
+
+            <div style="margin: 18px 0;">
+                <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" th:field="*{enabled}">
+                    <span>Kích hoạt tài khoản (Active)</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button class="button" type="submit">Lưu thông tin</button>
+                <a class="button secondary" th:href="@{/users}">Quay lại danh sách</a>
+            </div>
+        </form>
+
+        <p th:if="${mode == 'create'}" class="note">
+            💡 Mật khẩu mặc định cho người dùng do Admin khởi tạo là: <b>123456</b>.
+        </p>
+    </div>
+</main>
+</div>
+</body>
+</html>

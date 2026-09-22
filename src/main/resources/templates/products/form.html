@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/layout :: head(${mode == 'create' ? 'Thêm Product' : 'Sửa Product'})}"></head>
+<body>
+<div th:replace="~{layouts/layout :: page(~{::main})}">
+<main>
+    <div class="form-card">
+        <h1 th:text="${mode == 'create' ? 'Thêm Sản Phẩm Mới' : 'Cập Nhật Sản Phẩm'}"></h1>
+
+        <form th:object="${productDTO}"
+              th:with="actionUrl=${mode == 'create' ? '/products/create' : '/products/edit/' + productDTO.id}"
+              th:action="${actionUrl}" method="post"
+              enctype="multipart/form-data"
+              accept-charset="UTF-8">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert error">
+                <p th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+            </div>
+            <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+            <div>
+                <label for="name">Tên sản phẩm</label>
+                <input id="name" type="text" th:field="*{name}" placeholder="Nhập tên sản phẩm...">
+                <small class="error-text" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+            </div>
+
+            <div>
+                <label for="description">Mô tả chi tiết</label>
+                <textarea id="description" th:field="*{description}" rows="4" placeholder="Mô tả thông tin chi tiết về sản phẩm..."></textarea>
+            </div>
+
+            <div>
+                <label for="price">Đơn giá (VNĐ)</label>
+                <input id="price" type="number" step="0.01" th:field="*{price}" placeholder="Ví dụ: 1500000">
+                <small class="error-text" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
+            </div>
+
+            <div>
+                <label for="image">Hình ảnh sản phẩm</label>
+                <input id="image" type="file" name="image" accept="image/*">
+            </div>
+
+            <div th:if="${productDTO.imageUrl != null and !#strings.isEmpty(productDTO.imageUrl)}" style="margin-top: 10px;">
+                <label>Ảnh hiện tại:</label>
+                <img th:src="${#strings.substringBefore(productDTO.imageUrl, '|')}" class="preview" alt="Preview Image">
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="button">Lưu sản phẩm</button>
+                <a class="button secondary" th:href="@{/products}">Hủy bỏ</a>
+            </div>
+        </form>
+    </div>
+</main>
+</div>
+</body>
+</html>
